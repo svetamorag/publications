@@ -22,7 +22,7 @@
 
 [7\. How this is handled on other providers	5](#7.-how-this-is-handled-on-other-providers)
 
-[8\. Google Cloud: the primary control plane \- the gap and next steps	6](#8.-google-cloud:-the-primary-control-plane---the-gap-and-next-steps)
+[8\. Google Cloud: the primary control plane \- the gap	5](#8.-google-cloud:-the-primary-control-plane---the-gap)
 
 [8.1 What Google Cloud have today	6](#8.1-what-google-cloud-have-today)
 
@@ -37,10 +37,6 @@ Three findings drive this report:
 1. **Customers cannot enforce spend limits per user, agent, or project on our platform.** Quotas, budgets, and Provisioned Throughput are all project-scoped; project-per-user is not viable at enterprise scale. There is no per-principal quota and no per-principal spend cap. Parallel agents can burn thousands of dollars in minutes with no platform-side stop.  
 2. **The platform cannot tell customers tokens-per-principal.** Audit logs identify who called which model, but carry no token counts. Monitoring metrics carry token counts, but no principal. Customers are forced to build fragile client-side telemetry to answer "who spent this.". However, they can’t always do that successfully for third-party applications, like Claude Code, Antigravity tools and others.  
 3. **Any control that requires each developer to implement something fails at fleet scale.** Per-request headers (e.g., PT spillover opt-out), in-agent budgets, and hand-added instrumentation cannot be mandated across heterogeneous tools (Claude Code, frameworks, third-party proxies). Enforcement must be involuntary: server-side, identity-scoped.
-
-If Google Cloud implements native per-principal quotas and hard stops, it will achieve a first-mover advantage.
-
-Next steps: close the granularity gap with two product moves (granular quotas and ADK/Agent Runtime run-level visibility \- already begun in adk-python \#6357 issue), while Customer Engineering ships guides and reference pipelines that give customers workable control today. Details in §8.
 
 ---
 
@@ -120,7 +116,7 @@ Bedrock's server-side token logging and Azure's server-side token quotas each co
 
 ---
 
-## **8\. Google Cloud: the primary control plane \- the gap and next steps** {#8.-google-cloud:-the-primary-control-plane---the-gap-and-next-steps}
+## **8\. Google Cloud: the primary control plane \- the gap** {#8.-google-cloud:-the-primary-control-plane---the-gap}
 
 **The gap, stated once:** quotas, budgets, and PT are project-scoped; audit logs have principals but no tokens; metrics have tokens but no principals; PT silently spills to PAYG with only a per-request opt-out. Customers therefore cannot attribute, limit, or predict at the grain they manage people and agents \- and are hand-building IAM-revocation kill switches to compensate.
 
