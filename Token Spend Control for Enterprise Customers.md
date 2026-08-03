@@ -1,32 +1,13 @@
-# **Token Spend Control for Enterprise AI Agents** {#token-spend-control-for-enterprise-ai-agents}
+# **Token Spend Control for Enterprise AI Agents** 
 
-## **Report to Management \- Customer Needs and Recommended Actions** {#report-to-management---customer-needs-and-recommended-actions}
+## **Report to Management \- Customer Needs and Recommended Actions** 
 
 *July 2026*
 
 *Sveta Morag*
 
-[**Token Spend Control for Enterprise AI Agents	1**](#token-spend-control-for-enterprise-ai-agents)
 
-[Report to Management \- Customer Needs and Recommended Actions	1](#report-to-management---customer-needs-and-recommended-actions)
 
-[2\. Scope and constraints	2](#2.-scope-and-constraints)
-
-[3\. AI provider customer needs	3](#3.-ai-provider-customer-needs)
-
-[4\. The consumption-plane taxonomy	3](#4.-the-consumption-plane-taxonomy)
-
-[5\. The enforcement problem: hard cutoffs and bounded burn	4](#5.-the-enforcement-problem:-hard-cutoffs-and-bounded-burn)
-
-[6\. Estimating agent run cost: the session/run level, not the call level	5](#6.-estimating-agent-run-cost:-the-session/run-level,-not-the-call-level)
-
-[7\. How this is handled on other providers	5](#7.-how-this-is-handled-on-other-providers)
-
-[8\. Google Cloud: the primary control plane \- the gap	5](#8.-google-cloud:-the-primary-control-plane---the-gap)
-
-[8.1 What Google Cloud have today	6](#8.1-what-google-cloud-have-today)
-
-[9\. Sources	8](#9.-sources)
 
 **1\. Executive summary**
 
@@ -40,7 +21,7 @@ Three findings drive this report:
 
 ---
 
-## **2\. Scope and constraints** {#2.-scope-and-constraints}
+## **2\. Scope and constraints** 
 
 **In scope:** direct token consumption only \- prediction, attribution, and hard enforcement. Out of scope: subscriptions, caching costs,  infrastructure, additional agentic services and solutions.
 
@@ -53,7 +34,7 @@ Three findings drive this report:
 
 ---
 
-## **3\. AI provider customer needs** {#3.-ai-provider-customer-needs}
+## **3\. AI provider customer needs**
 
 Three needs, held in different combinations across finance, team leads, and platform teams \- role assignment varies by customer and must not be hard-wired:
 
@@ -65,7 +46,7 @@ Three needs, held in different combinations across finance, team leads, and plat
 
 ---
 
-## **4\. The consumption-plane taxonomy** {#4.-the-consumption-plane-taxonomy}
+## **4\. The consumption-plane taxonomy** 
 
 Customer token traffic flows through four planes; each demands its own enforcement point:
 
@@ -80,7 +61,7 @@ Conclusion customers reach: enforcement must be federated per plane; only the da
 
 ---
 
-## **5\. The enforcement problem: hard cutoffs and bounded burn** {#5.-the-enforcement-problem:-hard-cutoffs-and-bounded-burn}
+## **5\. The enforcement problem: hard cutoffs and bounded burn** 
 
 Monitoring is not control. A limit is real only if the next over-limit request is rejected or de-authorized. 
 
@@ -97,7 +78,7 @@ Two working principles from the field: billing-based controls are backstops; and
 
 ---
 
-## **6\. Estimating agent run cost: the session/run level, not the call level** {#6.-estimating-agent-run-cost:-the-session/run-level,-not-the-call-level}
+## **6\. Estimating agent run cost: the session/run level, not the call level** 
 
 Everything customers want \- budgets, chargeback, "agent as a worker with billable hours" \- is a per-**run** question, and call-level data cannot answer it: context accumulation makes late calls dearer, caching makes per-call costs non-additive, reasoning tokens hide inside calls, retries double-count. Caching (e.g., Prompt Caching in Gemini) makes late calls cheaper but cost estimation harder. The needed unit is tokens-per-run as a *distribution* (P50 plan / P95 reserve / P99 ceiling), which requires a run ID on every call, all token species summed per run, and failed runs included.
 
@@ -105,7 +86,7 @@ Everything customers want \- budgets, chargeback, "agent as a worker with billab
 
 ---
 
-## **7\. How this is handled on other providers** {#7.-how-this-is-handled-on-other-providers}
+## **7\. How this is handled on other providers** 
 
 Every competitor offers a server-side container with limits; none offers per-user/per-agent spend caps \- the gap is industry-wide, which makes it winnable:
 
@@ -116,11 +97,11 @@ Bedrock's server-side token logging and Azure's server-side token quotas each co
 
 ---
 
-## **8\. Google Cloud: the primary control plane \- the gap** {#8.-google-cloud:-the-primary-control-plane---the-gap}
+## **8\. Google Cloud: the primary control plane \- the gap** 
 
 **The gap, stated once:** quotas, budgets, and PT are project-scoped; audit logs have principals but no tokens; metrics have tokens but no principals; PT silently spills to PAYG with only a per-request opt-out. Customers therefore cannot attribute, limit, or predict at the grain they manage people and agents \- and are hand-building IAM-revocation kill switches to compensate.
 
-### **8.1 What Google Cloud have today** {#8.1-what-google-cloud-have-today}
+### **8.1 What Google Cloud have today** 
 
 The building blocks exist; none crosses the principal-grain line on its own. Stated honestly, with each capability's limitation:
 
@@ -140,7 +121,7 @@ Read as a whole: the raw material for measurement is largely present. The gaps a
 
 ---
 
-## **9\. Sources** {#9.-sources}
+## **9\. Sources** 
 
 * FinOps Foundation — *FinOps for AI: Tools & Services Considerations*; *Token Economics* series (agent cost multipliers, gateway budget guardrails, FOCUS)  
 * F. Ferreira (Medium) — *How We Built an Enterprise-Grade Claude Code Gateway on GCP* (case study: Vertex routing, BigQuery usage capture, automated spend limits)  
